@@ -1,5 +1,2 @@
 update/%:
-	maltmill new -w handlename/$*
-
-setup:
-	brew install Songmu/tap/maltmill
+	go run github.com/Songmu/maltmill/cmd/maltmill@main new -w handlename/$*
