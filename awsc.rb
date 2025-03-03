@@ -1,26 +1,26 @@
 class Awsc < Formula
-  version '0.2.2'
+  version '0.2.3'
   homepage 'https://github.com/handlename/awsc'
 
   on_macos do
     if Hardware::CPU.arm?
-      url 'https://github.com/handlename/awsc/releases/download/v0.2.2/awsc_0.2.2_darwin_arm64.tar.gz'
-      sha256 '26466cc62d16d28dd78cf7ea26f2ae2ec3815575c7f9d54fed1b364eba978017'
+      url 'https://github.com/handlename/awsc/releases/download/v0.2.3/awsc_0.2.3_darwin_arm64.tar.gz'
+      sha256 '5dcb0c9d943f144c00a31ab16c3c4b73ee35e8e1b9086bbb663fc46fc8354d44'
     end
     if Hardware::CPU.intel?
-      url 'https://github.com/handlename/awsc/releases/download/v0.2.2/awsc_0.2.2_darwin_amd64.tar.gz'
-      sha256 'f5d356f8f51d0a778b8d8517346317e2dcec17df2bfcbc47a3df18676443cd90'
+      url 'https://github.com/handlename/awsc/releases/download/v0.2.3/awsc_0.2.3_darwin_amd64.tar.gz'
+      sha256 '256bf471e8295de018a139ab61b54c91a9172694955e0b1a2923a9157cc0172c'
     end
   end
 
   on_linux do
     if Hardware::CPU.arm? && Hardware::CPU.is_64_bit?
-      url 'https://github.com/handlename/awsc/releases/download/v0.2.2/awsc_0.2.2_linux_arm64.tar.gz'
-      sha256 '5135ad8b2e54e1552d2984c167ca77dc1c7a47a2cb34a359bdeede3fb998bb5b'
+      url 'https://github.com/handlename/awsc/releases/download/v0.2.3/awsc_0.2.3_linux_arm64.tar.gz'
+      sha256 'c6e7929143f718b0be176fb2bcca765b22eda8e07fe7aad1098f6b8840896d1c'
     end
     if Hardware::CPU.intel?
-      url 'https://github.com/handlename/awsc/releases/download/v0.2.2/awsc_0.2.2_linux_amd64.tar.gz'
-      sha256 'f6947e873c71deba8765ab1a50a3e1688f282b1fa736c661981ba7c20a80b457'
+      url 'https://github.com/handlename/awsc/releases/download/v0.2.3/awsc_0.2.3_linux_amd64.tar.gz'
+      sha256 'ec41b897cf4717bec383e2d1ba2bc60cbc13f626e98a53eb79a6c178811389ab'
     end
   end
 
