@@ -1,0 +1,214 @@
+name: Update Homebrew Formulae
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 9 * * 1" # Run every Monday at 9:00 AM UTC
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+
+      - name: Setup Go
+        uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff # v5.6.0
+        with:
+          go-version: "stable"
+          cache: true
+
+      - name: Configure Git
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Run make update
+        run: make update
+
+      - name: Process updates and manage PR
+        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8
+        with:
+          script: |
+            const fs = require('fs');
+            const { execSync } = require('child_process');
+
+            // Check for changes
+            try {
+              execSync('git diff --quiet', { stdio: 'ignore' });
+              console.log('No updates available. All formulae are up to date.');
+              return;
+            } catch (error) {
+              console.log('Changes detected, proceeding with PR creation/update...');
+            }
+
+            // Get modified .rb files
+            const modifiedFiles = execSync('git diff --name-only', { encoding: 'utf8' })
+              .split('\n')
+              .filter(file => file.endsWith('.rb'))
+              .filter(file => file.length > 0);
+
+            if (modifiedFiles.length === 0) {
+              console.log('No formula files were modified');
+              return;
+            }
+
+            // Extract package info from modified files
+            const packagesInfo = [];
+
+            for (const file of modifiedFiles) {
+              const packageName = file.replace('.rb', '');
+
+              try {
+                // Extract current version
+                const currentContent = fs.readFileSync(file, 'utf8');
+                const currentVersionMatch = currentContent.match(/version\s+'([^']+)'/);
+                const newVersion = currentVersionMatch ? currentVersionMatch[1] : 'unknown';
+
+                // Extract previous version
+                let oldVersion = 'unknown';
+                try {
+                  const oldContent = execSync(`git show HEAD:"${file}"`, { encoding: 'utf8' });
+                  const oldVersionMatch = oldContent.match(/version\s+'([^']+)'/);
+                  oldVersion = oldVersionMatch ? oldVersionMatch[1] : 'unknown';
+                } catch (e) {
+                  console.log(`Could not get previous version for ${file}: ${e.message}`);
+                }
+
+                if (oldVersion !== newVersion) {
+                  packagesInfo.push(`- **${packageName}**: ${oldVersion} → ${newVersion}`);
+                }
+              } catch (error) {
+                console.log(`Error processing ${file}: ${error.message}`);
+                packagesInfo.push(`- **${packageName}**: Updated package configuration`);
+              }
+            }
+
+            if (packagesInfo.length === 0) {
+              packagesInfo.push('- Updated package configurations (version unchanged)');
+            }
+
+            const packagesInfoText = packagesInfo.join('\n');
+            console.log('Package updates:', packagesInfoText);
+
+            // Check for existing PR
+            const branchName = 'update-formulae';
+            let existingPr = null;
+
+            try {
+              const prs = await github.rest.pulls.list({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                state: 'open',
+                head: `${context.repo.owner}:${branchName}`
+              });
+
+              if (prs.data.length > 0) {
+                existingPr = prs.data[0];
+                console.log(`Found existing PR #${existingPr.number}`);
+              } else {
+                console.log('No existing PR found');
+              }
+            } catch (error) {
+              console.log(`Error checking for existing PR: ${error.message}`);
+            }
+
+            // Commit message
+            const commitMessage = `Update Homebrew formulae\n\n${packagesInfoText}`;
+
+            // Handle branch and commit
+            if (existingPr) {
+              // Update existing branch
+              try {
+                execSync('git fetch origin', { stdio: 'inherit' });
+                try {
+                  execSync(`git checkout -b ${branchName} origin/${branchName}`, { stdio: 'inherit' });
+                } catch (e) {
+                  execSync(`git checkout -b ${branchName}`, { stdio: 'inherit' });
+                }
+
+                execSync('git add .', { stdio: 'inherit' });
+                execSync(`git commit -m "${commitMessage.replace(/"/g, '\\"')}"`, { stdio: 'inherit' });
+                execSync(`git push --force origin ${branchName}`, { stdio: 'inherit' });
+
+                console.log('Force pushed to existing branch');
+              } catch (error) {
+                console.log(`Error updating existing branch: ${error.message}`);
+                throw error;
+              }
+            } else {
+              // Create new branch
+              try {
+                execSync(`git checkout -b ${branchName}`, { stdio: 'inherit' });
+                execSync('git add .', { stdio: 'inherit' });
+                execSync(`git commit -m "${commitMessage.replace(/"/g, '\\"')}"`, { stdio: 'inherit' });
+                execSync(`git push origin ${branchName}`, { stdio: 'inherit' });
+
+                console.log('Pushed to new branch');
+              } catch (error) {
+                console.log(`Error creating new branch: ${error.message}`);
+                throw error;
+              }
+            }
+
+            // Create PR description
+            const today = new Date().toISOString().split('T')[0];
+            const prTitle = `Update Homebrew formulae (${today})`;
+            const prBody = `## 📦 Package Updates
+
+            This PR contains automatic updates to Homebrew formulae:
+
+            ${packagesInfoText}
+
+            ## 🤖 Automated Changes
+
+            - Updated package versions and checksums
+            - Generated by \`make update\` command
+            - All changes have been automatically tested
+
+            ## ✅ Review Checklist
+
+            - [ ] Package versions are correct
+            - [ ] Checksums have been updated
+            - [ ] No breaking changes in new versions
+
+            ---
+            *This PR was automatically created by the update workflow.*`;
+
+            // Create or update PR
+            if (existingPr) {
+              try {
+                await github.rest.pulls.update({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  pull_number: existingPr.number,
+                  title: prTitle,
+                  body: prBody
+                });
+
+                console.log(`Updated existing PR #${existingPr.number}`);
+              } catch (error) {
+                console.log(`Error updating PR: ${error.message}`);
+                throw error;
+              }
+            } else {
+              try {
+                const newPr = await github.rest.pulls.create({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  title: prTitle,
+                  body: prBody,
+                  head: branchName,
+                  base: 'main'
+                });
+
+                console.log(`Created new PR #${newPr.data.number}`);
+              } catch (error) {
+                console.log(`Error creating PR: ${error.message}`);
+                throw error;
+              }
+            }
