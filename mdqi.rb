@@ -2,6 +2,7 @@ class Mdqi < Formula
   desc 'command line interface for mdq like mysql cli.'
   version '0.0.3'
   homepage 'https://github.com/handlename/mdqi'
+  license 'MIT'
 
   on_macos do
     if Hardware::CPU.intel?
@@ -27,5 +28,9 @@ class Mdqi < Formula
       system 'make', 'build'
     end
     bin.install 'mdqi'
+  end
+
+  test do
+    system "#{bin}/mdqi", '-h'
   end
 end

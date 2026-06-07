@@ -1,6 +1,7 @@
 class Awsc < Formula
   version '0.3.4'
   homepage 'https://github.com/handlename/awsc'
+  license 'MIT'
 
   on_macos do
     if Hardware::CPU.arm?
@@ -34,5 +35,9 @@ class Awsc < Formula
       system 'make', 'build'
     end
     bin.install 'awsc'
+  end
+
+  test do
+    system "#{bin}/awsc", '-h'
   end
 end
