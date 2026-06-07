@@ -2,6 +2,7 @@ class Ssmwrap < Formula
   desc 'Execute command with environment variables or/and files loaded from AWS SSM.'
   version '2.2.5'
   homepage 'https://github.com/handlename/ssmwrap'
+  license 'MIT'
 
   on_macos do
     if Hardware::CPU.arm?
@@ -35,5 +36,9 @@ class Ssmwrap < Formula
       system 'make', 'build'
     end
     bin.install 'ssmwrap'
+  end
+
+  test do
+    system "#{bin}/ssmwrap", '-h'
   end
 end
