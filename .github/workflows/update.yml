@@ -146,7 +146,7 @@ jobs:
                 execSync(`git checkout -b ${branchName}`, { stdio: 'inherit' });
                 execSync('git add .', { stdio: 'inherit' });
                 execSync(`git commit -m "${commitMessage.replace(/"/g, '\\"')}"`, { stdio: 'inherit' });
-                execSync(`git push origin ${branchName}`, { stdio: 'inherit' });
+                execSync(`git push --force origin ${branchName}`, { stdio: 'inherit' });
 
                 console.log('Pushed to new branch');
               } catch (error) {
