@@ -1,28 +1,28 @@
 class Ztx < Formula
   desc 'PTY-proxy wrapper that makes AI agent CLIs for Zed.'
-  version '0.1.2'
+  version '0.2.0'
   homepage 'https://github.com/handlename/ztx'
   license 'MIT'
 
   on_macos do
     if Hardware::CPU.arm?
-      url 'https://github.com/handlename/ztx/releases/download/v0.1.2/ztx_0.1.2_darwin_arm64.tar.gz'
-      sha256 'cba6ffdb4118a5cd8655c3cf49f9a90015cb058cc51eec8627a95c2d1e265efc'
+      url 'https://github.com/handlename/ztx/releases/download/v0.2.0/ztx_0.2.0_darwin_arm64.tar.gz'
+      sha256 '2e6725068dba1d7b36e0d5948503f051f8d9e0ee822c1cac642b5a632d3a869a'
     end
     if Hardware::CPU.intel?
-      url 'https://github.com/handlename/ztx/releases/download/v0.1.2/ztx_0.1.2_darwin_amd64.tar.gz'
-      sha256 '8324a30f05e2bc51bdffb52b802b1d578badcd8b52e6683fb6c9e3380f4cea3f'
+      url 'https://github.com/handlename/ztx/releases/download/v0.2.0/ztx_0.2.0_darwin_amd64.tar.gz'
+      sha256 '0192630fbf22635a224c5ccbb52216a1909354895bfaec250f19aa825c649ab1'
     end
   end
 
   on_linux do
     if Hardware::CPU.arm? && Hardware::CPU.is_64_bit?
-      url 'https://github.com/handlename/ztx/releases/download/v0.1.2/ztx_0.1.2_linux_arm64.tar.gz'
-      sha256 'ec46db8f3413cbe90d30ba4ff4e144b61cc92e475353bc78827692bab2f5add7'
+      url 'https://github.com/handlename/ztx/releases/download/v0.2.0/ztx_0.2.0_linux_arm64.tar.gz'
+      sha256 '3f86bd0805b13a2372149ed4cbb0ff8ba3c33ea028352000725e6c5adc320ac6'
     end
     if Hardware::CPU.intel?
-      url 'https://github.com/handlename/ztx/releases/download/v0.1.2/ztx_0.1.2_linux_amd64.tar.gz'
-      sha256 '92e4f01a8ac1e134a12d3490d5d35cd63b63a3d77d864d7cb5a6ad65bb8fa342'
+      url 'https://github.com/handlename/ztx/releases/download/v0.2.0/ztx_0.2.0_linux_amd64.tar.gz'
+      sha256 'd667f85f9ad6cee0d2b1f83fc83499e699289d3319480b09727f999f1481db61'
     end
   end
 
