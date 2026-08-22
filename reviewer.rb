@@ -1,27 +1,27 @@
 class Reviewer < Formula
-  version '0.4.0'
+  version '0.5.0'
   homepage 'https://github.com/handlename/reviewer'
   license 'MIT'
 
   on_macos do
     if Hardware::CPU.arm?
-      url 'https://github.com/handlename/reviewer/releases/download/v0.4.0/reviewer_0.4.0_darwin_arm64.tar.gz'
-      sha256 '7c18edec9830f490080fade723c2ca682130964e151b85663b7fb4646b7d2a62'
+      url 'https://github.com/handlename/reviewer/releases/download/v0.5.0/reviewer_0.5.0_darwin_arm64.tar.gz'
+      sha256 'eaa24c85a8300fe4c2154b5cdb1dcab58e81c3b02d4bc23d3f7e1210ca215798'
     end
     if Hardware::CPU.intel?
-      url 'https://github.com/handlename/reviewer/releases/download/v0.4.0/reviewer_0.4.0_darwin_amd64.tar.gz'
-      sha256 '6cfe98620039a2d2033a9c38259e4df289835b82d7010002591c8638892293d1'
+      url 'https://github.com/handlename/reviewer/releases/download/v0.5.0/reviewer_0.5.0_darwin_amd64.tar.gz'
+      sha256 '223800c7b24b53d85b8e07034978f5196a49a00e351219d0068f1da247341427'
     end
   end
 
   on_linux do
     if Hardware::CPU.arm? && Hardware::CPU.is_64_bit?
-      url 'https://github.com/handlename/reviewer/releases/download/v0.4.0/reviewer_0.4.0_linux_arm64.tar.gz'
-      sha256 'e2fda2a6d3209559a9c30c1c59bf9bf43cfffd3d062386bd5e291a8424568ac0'
+      url 'https://github.com/handlename/reviewer/releases/download/v0.5.0/reviewer_0.5.0_linux_arm64.tar.gz'
+      sha256 'b050fbda5ef14856c543e96cbc9ea4ccf021ddc6d9d6f2830d731aca877e08d1'
     end
     if Hardware::CPU.intel?
-      url 'https://github.com/handlename/reviewer/releases/download/v0.4.0/reviewer_0.4.0_linux_amd64.tar.gz'
-      sha256 'df3ec410b3d56caee6f6279c5126c242ce20ac112625a7b9a33f9d48af6b0c14'
+      url 'https://github.com/handlename/reviewer/releases/download/v0.5.0/reviewer_0.5.0_linux_amd64.tar.gz'
+      sha256 'b1ad5cd700b8a528f5ab8383ed2eac6216bffac93a4c2517cdf96fe73351b19a'
     end
   end
 
